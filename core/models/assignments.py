@@ -51,6 +51,9 @@ class Assignment(db.Model):
 
     @classmethod
     def upsert(cls, assignment_new: 'Assignment'):
+        if assignment_new.content is None:
+            raise ValueError('Content cannot be null')
+
         if assignment_new.id is not None:
             assignment = Assignment.get_by_id(assignment_new.id)
             assertions.assert_found(
@@ -81,9 +84,12 @@ class Assignment(db.Model):
     @classmethod
     def mark_grade(cls, _id, grade, auth_principal: AuthPrincipal):
         assignment = Assignment.get_by_id(_id)
-        assertions.assert_found(assignment, 'No assignment with this id was found')
-        assertions.assert_valid(grade is not None, 'assignment with empty grade cannot be graded')
-        assertions.assert_valid(assignment.state is AssignmentStateEnum.DRAFT, 'assignment with empty grade cannot be graded')
+        assertions.assert_found(
+            assignment, 'No assignment with this id was found')
+        assertions.assert_valid(
+            grade is not None, 'assignment with empty grade cannot be graded')
+        assertions.assert_valid(assignment.state is AssignmentStateEnum.DRAFT,
+                                'assignment with empty grade cannot be graded')
 
         assignment.grade = grade
         assignment.state = AssignmentStateEnum.GRADED

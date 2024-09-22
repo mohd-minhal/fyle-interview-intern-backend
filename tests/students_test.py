@@ -37,6 +37,7 @@ def test_post_assignment_null_content(client, h_student_1):
         })
 
     assert response.status_code == 400
+    assert response.json['error'] == "Content cannot be null"
 
 
 def test_post_assignment_student_1(client, h_student_1):
