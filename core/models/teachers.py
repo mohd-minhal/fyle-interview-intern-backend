@@ -11,3 +11,18 @@ class Teacher(db.Model):
 
     def __repr__(self):
         return '<Teacher %r>' % self.id
+
+    
+    @classmethod
+    def get_all_teachers(cls):
+        return cls.query.all()
+    
+    def to_dict(self):
+        return {
+            "created_at": self.created_at.isoformat(),
+            "id": self.id,
+            "updated_at": self.updated_at.isoformat(),
+            "user_id": self.user_id,
+        }
+    
+    
