@@ -10,6 +10,14 @@ class AuthPrincipal:
         self.student_id = student_id
         self.teacher_id = teacher_id
         self.principal_id = principal_id
+        
+    @classmethod
+    def from_request(cls):
+        principal_info = request.headers.get('X-Principal')
+        if principal_info:
+            data = json.loads(principal_info)
+            return cls(**data) 
+        return None 
 
 
 def accept_payload(func):
