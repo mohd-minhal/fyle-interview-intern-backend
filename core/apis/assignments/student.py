@@ -2,7 +2,8 @@ from flask import Blueprint, jsonify
 from core import db
 from core.apis import decorators
 from core.apis.responses import APIResponse
-from core.models.assignments import Assignment
+from core.libs import assertions
+from core.models.assignments import Assignment, AssignmentStateEnum
 
 from .schema import AssignmentSchema, AssignmentSubmitSchema
 student_assignments_resources = Blueprint('student_assignments_resources', __name__)
@@ -38,12 +39,14 @@ def upsert_assignment(p, incoming_payload):
 @decorators.accept_payload
 @decorators.authenticate_principal
 def submit_assignment(p, incoming_payload):
-    if incoming_payload.get('content') is None:
-        return jsonify({"error": "Content cannot be null"}), 400
-    
     """Submit an assignment"""
     submit_assignment_payload = AssignmentSubmitSchema().load(incoming_payload)
 
+    submitted_assignment = Assignment.get_by_id(submit_assignment_payload.id)
+    assertions.assert_found(submitted_assignment, "Assignment not found")
+    assertions.assert_valid(submitted_assignment.state == AssignmentStateEnum.DRAFT,
+                            "only a draft assignment can be submitted")
+    
     submitted_assignment = Assignment.submit(
         _id=submit_assignment_payload.id,
         teacher_id=submit_assignment_payload.teacher_id,
