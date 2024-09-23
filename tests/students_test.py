@@ -1,3 +1,7 @@
+from core import db
+from core.models.students import Student
+
+
 def test_get_assignments_student_1(client, h_student_1):
     response = client.get(
         '/student/assignments',
@@ -87,3 +91,11 @@ def test_assignment_resubmit_error(client, h_student_1):
     assert response.status_code == 400
     assert error_response['error'] == 'FyleError'
     assert error_response["message"] == 'only a draft assignment can be submitted'
+
+
+def test_student_repr():
+    student = Student(user_id=1)
+    db.session.add(student)
+    db.session.commit()
+
+    assert repr(student) == '<Student %r>' % student.id

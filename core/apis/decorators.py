@@ -10,14 +10,14 @@ class AuthPrincipal:
         self.student_id = student_id
         self.teacher_id = teacher_id
         self.principal_id = principal_id
-        
+
     @classmethod
     def from_request(cls):
         principal_info = request.headers.get('X-Principal')
         if principal_info:
             data = json.loads(principal_info)
-            return cls(**data) 
-        return None 
+            return cls(**data)
+        return None
 
 
 def accept_payload(func):
@@ -42,11 +42,14 @@ def authenticate_principal(func):
         )
 
         if request.path.startswith('/student'):
-            assertions.assert_true(p.student_id is not None, 'requester should be a student')
+            assertions.assert_true(
+                p.student_id is not None, 'requester should be a student')
         elif request.path.startswith('/teacher'):
-            assertions.assert_true(p.teacher_id is not None, 'requester should be a teacher')
+            assertions.assert_true(
+                p.teacher_id is not None, 'requester should be a teacher')
         elif request.path.startswith('/principal'):
-            assertions.assert_true(p.principal_id is not None, 'requester should be a principal')
+            assertions.assert_true(
+                p.principal_id is not None, 'requester should be a principal')
         else:
             assertions.assert_found(None, 'No such api')
 

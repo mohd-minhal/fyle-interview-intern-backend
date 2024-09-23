@@ -5,7 +5,8 @@ from core.apis.responses import APIResponse
 from core.models.assignments import Assignment
 
 from .schema import AssignmentSchema, AssignmentGradeSchema
-teacher_assignments_resources = Blueprint('teacher_assignments_resources', __name__)
+teacher_assignments_resources = Blueprint(
+    'teacher_assignments_resources', __name__)
 
 
 @teacher_assignments_resources.route('/assignments', methods=['GET'], strict_slashes=False)
@@ -13,9 +14,10 @@ teacher_assignments_resources = Blueprint('teacher_assignments_resources', __nam
 def list_assignments(p):
     """Returns list of assignments"""
     teachers_assignments = Assignment.query.filter_by(teacher_id=p.teacher_id)\
-                                          .filter(Assignment.state.in_(['SUBMITTED', 'GRADED']))\
-                                          .all()
-    teachers_assignments_dump = AssignmentSchema().dump(teachers_assignments, many=True)
+        .filter(Assignment.state.in_(['SUBMITTED', 'GRADED']))\
+        .all()
+    teachers_assignments_dump = AssignmentSchema().dump(
+        teachers_assignments, many=True)
     return APIResponse.respond(data=teachers_assignments_dump)
 
 

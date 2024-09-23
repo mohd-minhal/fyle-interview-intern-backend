@@ -6,7 +6,8 @@ from core.libs import assertions
 from core.models.assignments import Assignment, AssignmentStateEnum
 
 from .schema import AssignmentSchema, AssignmentSubmitSchema
-student_assignments_resources = Blueprint('student_assignments_resources', __name__)
+student_assignments_resources = Blueprint(
+    'student_assignments_resources', __name__)
 
 
 @student_assignments_resources.route('/assignments', methods=['GET'], strict_slashes=False)
@@ -14,7 +15,8 @@ student_assignments_resources = Blueprint('student_assignments_resources', __nam
 def list_assignments(p):
     """Returns list of assignments"""
     students_assignments = Assignment.get_assignments_by_student(p.student_id)
-    students_assignments_dump = AssignmentSchema().dump(students_assignments, many=True)
+    students_assignments_dump = AssignmentSchema().dump(
+        students_assignments, many=True)
     return APIResponse.respond(data=students_assignments_dump)
 
 
@@ -46,7 +48,7 @@ def submit_assignment(p, incoming_payload):
     assertions.assert_found(submitted_assignment, "Assignment not found")
     assertions.assert_valid(submitted_assignment.state == AssignmentStateEnum.DRAFT,
                             "only a draft assignment can be submitted")
-    
+
     submitted_assignment = Assignment.submit(
         _id=submit_assignment_payload.id,
         teacher_id=submit_assignment_payload.teacher_id,

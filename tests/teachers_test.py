@@ -1,3 +1,6 @@
+from core import db
+from core.models.teachers import Teacher
+
 def test_get_assignments_teacher_1(client, h_teacher_1):
     response = client.get(
         '/teacher/assignments',
@@ -111,3 +114,10 @@ def test_get_assignments_by_teacher(client, h_teacher_1):
     for assignment in data:
         assert assignment['teacher_id'] == 1
         assert assignment['state'] in ['SUBMITTED', 'GRADED']
+
+def test_teacher_repr():
+    teacher = Teacher() 
+    db.session.add(teacher)
+    db.session.commit()
+    
+    assert repr(teacher) == '<Teacher %r>' % teacher.id
