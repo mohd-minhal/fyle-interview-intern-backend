@@ -1,5 +1,6 @@
 import pytest
 import json
+from core import db
 from tests import app
 
 
@@ -66,3 +67,19 @@ def h_principal():
     }
 
     return headers
+
+
+@pytest.fixture(scope='module')
+def db_session():
+    """Create a new database session for a test."""
+    connection = db.engine.connect()
+    transaction = connection.begin()
+
+    # Bind the session to the connection
+    db.session.remove()
+    db.session.configure(bind=connection)
+
+    yield db.session  # This will be the session used in the tests
+
+    transaction.rollback()
+    connection.close()

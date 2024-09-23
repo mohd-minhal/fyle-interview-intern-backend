@@ -13,6 +13,15 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.username
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email,
+            'created_at': self.created_at.isoformat(),  # Convert to ISO format if needed
+            'updated_at': self.updated_at.isoformat()   # Convert to ISO format if needed
+        }
+
     @classmethod
     def filter(cls, *criterion):
         db_query = db.session.query(cls)
