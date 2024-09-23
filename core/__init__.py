@@ -13,8 +13,6 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 app.test_client()
 
-
-# this is to enforce fk (not done by default in sqlite3)
 @event.listens_for(Engine, "connect")
 def _set_sqlite_pragma(dbapi_connection, connection_record):
     if isinstance(dbapi_connection, SQLite3Connection):

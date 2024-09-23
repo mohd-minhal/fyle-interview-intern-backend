@@ -96,3 +96,9 @@ def test_query_principal_directly(db_session):
 
     assert fetched_principal is not None
     assert fetched_principal.user_id == 1
+
+def test_principal_repr():
+    principal = Principal(id=1)
+    repr_string = repr(principal)
+    
+    assert repr_string == '<Principal 1>'
